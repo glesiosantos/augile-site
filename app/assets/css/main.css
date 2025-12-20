@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* 🔴 OBRIGATÓRIO no Tailwind v4 quando usa @apply */
+@reference utilities;
+
+@theme {
+  --color-primary: #2563eb;
+  --color-secondary: #0f172a;
+}
+
+body {
+  @apply bg-white text-slate-800 antialiased;
+}
+
+.input {
+  @apply w-full border rounded-lg px-4 py-3 mb-3;
+}
