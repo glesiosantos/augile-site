@@ -22,9 +22,7 @@
       <h1 class="text-4xl md:text-5xl font-bold mb-6">
         Controle total da sua oficina
         <br>
-        <span class="text-blue-400">
-          em um único sistema
-        </span>
+        <span class="text-blue-400">em um único sistema</span>
       </h1>
 
       <p class="text-slate-200 mb-10 text-lg">
@@ -35,10 +33,10 @@
       <!-- CTAs -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <NuxtLink
-          to="/checkout?plano=free14"
+          :to="checkoutLink"
           class="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-center"
         >
-          Teste grátis por 14 dias
+          Teste grátis por {{ planoTeste?.trialDays ?? 14 }} dias
         </NuxtLink>
 
         <a
@@ -51,3 +49,21 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { usePlanosStore } from '~/stores/planos.store'
+
+const planosStore = usePlanosStore()
+
+// garante que os dados existam (SSR-safe)
+await planosStore.carregar()
+
+const { planoTeste } = storeToRefs(planosStore)
+
+const checkoutLink = computed(() => {
+  const planoTeste = planosStore.planoTeste
+  return planoTeste ? `/checkout?plano=${planoTeste.id}` : '/checkout'
+})
+
+</script>
