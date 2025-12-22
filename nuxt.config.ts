@@ -7,5 +7,8 @@ export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@nuxt/ui'],
   vite: {
     plugins: [tailwindcss()]
+  },
+  devServer: {
+    port: 3001
   }
 })
