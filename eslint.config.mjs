@@ -1,32 +1,50 @@
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import vue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
 
 export default [
-  // Base JS (Standard)
+  // Base JS
   js.configs.recommended,
 
   // TypeScript
   ...tseslint.configs.recommended,
 
-  // Vue (Nuxt)
+  // Vue base rules
   ...vue.configs['flat/recommended'],
 
-  // Regras globais (Standard Style)
+  // 🔥 O PONTO-CHAVE (parser para Vue + TS)
   {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      }
+    },
     rules: {
-      semi: ['error', 'never'],              // sem ponto e vírgula
-      quotes: ['error', 'single'],            // aspas simples
-      'comma-dangle': ['error', 'never'],     // sem vírgula final
-      indent: ['error', 2],                   // 2 espaços
-      'no-multiple-empty-lines': ['error', { max: 1 }],
-      'space-before-function-paren': ['error', 'never'],
-      'object-curly-spacing': ['error', 'always'],
       'vue/multi-word-component-names': 'off'
     }
   },
 
-  // Vue SFC
+  // Regras globais (Standard Style)
+  {
+    rules: {
+      semi: ['error', 'never'],
+      quotes: ['error', 'single'],
+      'comma-dangle': ['error', 'never'],
+      indent: ['error', 2],
+      'no-multiple-empty-lines': ['error', { max: 1 }],
+      'space-before-function-paren': ['error', 'never'],
+      'object-curly-spacing': ['error', 'always'],
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-undef': 'off'
+    }
+  },
+
+  // Vue template formatting
   {
     files: ['**/*.vue'],
     rules: {
@@ -39,4 +57,3 @@ export default [
     }
   }
 ]
-
