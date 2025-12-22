@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     public: {
       GRAPHQL_ENDPOINT: process.env.NUXT_PUBLIC_GRAPHQL_ENDPOINT,
       WHATSAPP_NUMBER: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER,
-      APP_ENV: process.env.NUXT_PUBLIC_APP_ENV
+      APP_ENV: process.env.NUXT_PUBLIC_APP_ENV,
+      URL_APP_GESTOR: process.env.NUXT_PUBLIC_APP_URL
     }
   }
 })

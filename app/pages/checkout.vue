@@ -179,6 +179,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { registrarProprietario } from '~/services/proprietario.service'
 import { usePlanosStore } from '~/stores/planos.store'
 import { maskCPF, isValidCPF } from '~/utils/cpf'
 import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
@@ -253,17 +254,40 @@ function validate() {
   return true
 }
 
-function submit() {
+async function submit() {
   if (!validate() || !plano.value) return
 
-  console.log('CHECKOUT', {
-    nome: nome.value,
-    cpf: cpf.value,
-    whatsapp: whatsapp.value,
-    planoId: plano.value.id,
-    pagamento: pagamento.value
-  })
+  try {
+    const payload = {
+      cpf: cpf.value.replace(/\D/g, ''),
+      nomeCompleto: nome.value.trim(),
+      whatsapp: normalizeWhatsApp(whatsapp.value),
+      idPlano: plano.value.id
+    }
 
-  alert(isTeste.value ? 'Teste ativado!' : 'Pagamento iniciado!')
+    const result = await registrarProprietario(payload)
+
+    console.log('PROPRIETÁRIO REGISTRADO', result)
+
+    /**
+     * 🔁 Fluxo:
+     * - TESTE → acesso imediato
+     * - PAGO  → aguarda pagamento (status)
+     */
+    if (plano.value.eTeste) {
+      navigateTo('/sucesso')
+      return
+    }
+
+    alert(
+      'Cadastro realizado! ' +
+      'Após a confirmação do pagamento, você receberá o acesso pelo WhatsApp.'
+    )
+
+  } catch (error) {
+    console.error('Erro ao registrar proprietário', error)
+    alert('Não foi possível concluir o cadastro. Tente novamente.')
+  }
 }
+
 </script>
