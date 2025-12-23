@@ -73,3 +73,8 @@
     </div>
   </section>
 </template>
+<script setup lang="ts">
+useHead({
+  title: 'Sucesso!'
+})
+</script>

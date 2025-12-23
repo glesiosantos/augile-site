@@ -36,7 +36,6 @@
             'Acesso web e mobile',
             'Suporte via WhatsApp'
           ]"
-          :highlight="plano.eDestaque"
         />
       </div>
     </div>
@@ -49,13 +48,13 @@ import { usePlanosStore } from '~/stores/planos.store'
 
 const planosStore = usePlanosStore()
 
-// SSR-safe: carrega apenas uma vez
+// SSR-safe
 await planosStore.carregar()
 
 const { planos, carregando, erro } = storeToRefs(planosStore)
 
-// 🔥 somente planos pagos (eTeste === false)
+// ✅ REGRA OFICIAL: plano pago ≠ FREE
 const planosPagos = computed(() =>
-  planos.value.filter(plano => !plano.eTeste)
+  planos.value.filter(plano => plano.tipo !== 'FREE')
 )
 </script>

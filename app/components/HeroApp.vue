@@ -1,20 +1,20 @@
 <template>
   <section class="relative min-h-screen flex items-center justify-center text-center">
-    <!-- Imagem de fundo -->
+    <!-- IMAGEM DE FUNDO -->
     <img
       src="/assets/imgs/oficina-mecanica.webp"
       class="absolute inset-0 w-full h-full object-cover"
       alt="Oficina mecânica"
     >
 
-    <!-- Overlay -->
+    <!-- OVERLAY -->
     <div class="absolute inset-0 bg-slate-900/70" />
 
-    <!-- Conteúdo -->
+    <!-- CONTEÚDO -->
     <div class="relative max-w-3xl mx-auto px-6 text-white">
-      <!-- LOGO CENTRAL -->
+      <!-- LOGO -->
       <img
-        src="/assets/imgs/augile_logo_branco_completo.png"
+        src="/imgs/augile_logo_branco_completo.png"
         alt="Augile"
         class="mx-auto mb-8 h-16 md:h-20"
       >
@@ -36,12 +36,13 @@
           :to="checkoutLink"
           class="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-center"
         >
-          Teste grátis por {{ planoTeste?.trialDays ?? 14 }} dias
+          Teste grátis por {{ planoFree?.trialDays ?? 14 }} dias
         </NuxtLink>
 
         <a
           href="#planos"
-          class="px-8 py-4 border border-white/80 rounded-lg text-center hover:bg-white hover:text-slate-900 transition"
+          class="px-8 py-4 border border-white/80 rounded-lg text-center
+                 hover:bg-white hover:text-slate-900 transition"
         >
           Ver planos
         </a>
@@ -55,15 +56,14 @@ import { storeToRefs } from 'pinia'
 import { usePlanosStore } from '~/stores/planos.store'
 
 const planosStore = usePlanosStore()
-
-// garante que os dados existam (SSR-safe)
 await planosStore.carregar()
 
-const { planoTeste } = storeToRefs(planosStore)
+const { planoFree } = storeToRefs(planosStore)
 
-const checkoutLink = computed(() => {
-  const planoTeste = planosStore.planoTeste
-  return planoTeste ? `/checkout?plano=${planoTeste.id}` : '/checkout'
-})
-
+const checkoutLink = computed(() =>
+  planoFree.value
+    ? `/checkout?plano=${planoFree.value.id}`
+    : '/checkout'
+)
 </script>
+

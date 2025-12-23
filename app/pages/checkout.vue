@@ -77,9 +77,7 @@
                 @click="pagamento = 'cartao'"
               >
                 <p class="font-medium">Cartão de crédito</p>
-                <p class="text-sm text-slate-500">
-                  Cobrança recorrente
-                </p>
+                <p class="text-sm text-slate-500">Cobrança recorrente</p>
               </button>
 
               <button
@@ -93,9 +91,7 @@
                 @click="pagamento = 'pix'"
               >
                 <p class="font-medium">PIX</p>
-                <p class="text-sm text-slate-500">
-                  Pagamento imediato
-                </p>
+                <p class="text-sm text-slate-500">Pagamento imediato</p>
               </button>
             </div>
 
@@ -169,7 +165,7 @@
         <div class="border-t pt-4 flex justify-between items-center">
           <span class="text-lg font-semibold">Total</span>
           <span class="text-2xl font-bold text-blue-600">
-            R$ {{ plano.preco.toFixed(2).replace('.', ',') }}
+            R$ {{ plano.precoFinal.toFixed(2).replace('.', ',') }}
           </span>
         </div>
       </aside>
@@ -187,16 +183,20 @@ import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 const route = useRoute()
 const planosStore = usePlanosStore()
 
+useHead({
+  title: 'Finalizar assinatura'
+})
+
 await planosStore.carregar()
 
-const { planos, planoTeste, carregando, erro } = storeToRefs(planosStore)
+const { planos, planoFree, carregando, erro } = storeToRefs(planosStore)
 
 const plano = computed(() => {
   const id = route.query.plano as string | undefined
-  return planos.value.find(p => p.id === id) ?? planoTeste.value
+  return planos.value.find(p => p.id === id) ?? planoFree.value
 })
 
-const isTeste = computed(() => plano.value?.eTeste === true)
+const isTeste = computed(() => plano.value?.tipo === 'FREE')
 
 const nome = ref('')
 const cpf = ref('')
@@ -231,6 +231,11 @@ function onWhatsAppInput(e: Event) {
   whatsapp.value = maskWhatsApp((e.target as HTMLInputElement).value)
 }
 
+function normalizeWhatsApp(value: string) {
+  const digits = value.replace(/\D/g, '')
+  return digits.startsWith('55') ? digits : `55${digits}`
+}
+
 function validate() {
   errors.value = { nome: '', cpf: '', whatsapp: '' }
 
@@ -258,36 +263,17 @@ async function submit() {
   if (!validate() || !plano.value) return
 
   try {
-    const payload = {
+    await registrarProprietario({
       cpf: cpf.value.replace(/\D/g, ''),
       nomeCompleto: nome.value.trim(),
       whatsapp: normalizeWhatsApp(whatsapp.value),
       idPlano: plano.value.id
-    }
+    })
 
-    const result = await registrarProprietario(payload)
-
-    console.log('PROPRIETÁRIO REGISTRADO', result)
-
-    /**
-     * 🔁 Fluxo:
-     * - TESTE → acesso imediato
-     * - PAGO  → aguarda pagamento (status)
-     */
-    if (plano.value.eTeste) {
-      navigateTo('/sucesso')
-      return
-    }
-
-    alert(
-      'Cadastro realizado! ' +
-      'Após a confirmação do pagamento, você receberá o acesso pelo WhatsApp.'
-    )
-
+    navigateTo('/sucesso')
   } catch (error) {
     console.error('Erro ao registrar proprietário', error)
     alert('Não foi possível concluir o cadastro. Tente novamente.')
   }
 }
-
 </script>

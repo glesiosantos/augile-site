@@ -8,7 +8,7 @@
 
       <p class="text-slate-300 text-lg mb-14 max-w-3xl mx-auto">
         Experimente o Augile por
-        <strong>{{ planoTeste?.trialDays ?? 14 }} dias grátis</strong>.
+        <strong>{{ planoFree?.trialDays ?? 14 }} dias grátis</strong>.
         Ativação imediata e acesso enviado pelo WhatsApp.
       </p>
 
@@ -71,15 +71,15 @@ const planosStore = usePlanosStore()
 // garante dados (SSR + client)
 await planosStore.carregar()
 
-const { planoTeste } = storeToRefs(planosStore)
+const { planoFree } = storeToRefs(planosStore)
 
 /**
  * Link dinâmico para o checkout
  * sempre usando o ID real do plano teste
  */
 const checkoutLink = computed(() => {
-  return planoTeste.value
-    ? `/checkout?plano=${planoTeste.value.id}`
+  return planoFree.value
+    ? `/checkout?plano=${planoFree.value.id}`
     : '/checkout'
 })
 </script>

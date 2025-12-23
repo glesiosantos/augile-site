@@ -19,5 +19,11 @@ export default defineNuxtConfig({
       APP_ENV: process.env.NUXT_PUBLIC_APP_ENV,
       URL_APP_GESTOR: process.env.NUXT_PUBLIC_APP_URL
     }
+  },
+  app: {
+    head: {
+      titleTemplate: '%s | Augile',
+      title: 'Gestão Automotiva Inteligente'
+    }
   }
 })
