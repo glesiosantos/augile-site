@@ -1,5 +1,4 @@
-import { gql } from 'graphql-request'
-import { createGraphqlClient } from '~/config/graphql'
+import { useApi } from '~/config/axios'
 
 export type TipoPlano = 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE'
 
@@ -25,28 +24,11 @@ function calcularPrecoFinal(plano: PlanoBase): number {
 }
 
 export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
-  const client = createGraphqlClient()
+  const api = useApi()
 
-  const query = gql`
-    query {
-      carregarPlanos {
-        id
-        titulo
-        tipo
-        preco
-        precoPromocional
-        maxFiliais
-        maxUsuarios
-        trialDays
-      }
-    }
-  `
+  const { data } = await api.get<PlanoBase[]>('/planos')
 
-  const { carregarPlanos } = await client.request<{
-    carregarPlanos: PlanoBase[]
-  }>(query)
-
-  return carregarPlanos.map(plano => ({
+  return data.map(plano => ({
     ...plano,
     precoFinal: calcularPrecoFinal(plano)
   }))

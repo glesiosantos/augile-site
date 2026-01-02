@@ -22,7 +22,7 @@
 const config = useRuntimeConfig()
 
 const whatsappUrl = computed(() => {
-  const number = config.public.WHATSAPP_NUMBER
+  const number = config.public.whatsAppNumber
   const message = encodeURIComponent(
     'Olá! Quero conhecer o Augile para minha oficina.'
   )

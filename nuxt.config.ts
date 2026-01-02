@@ -8,22 +8,18 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  devServer: {
-    port: 3001
-  },
   runtimeConfig: {
-    graphqlSecretKey: process.env.GRAPHQL_SECRET_KEY,
     public: {
-      GRAPHQL_ENDPOINT: process.env.NUXT_PUBLIC_GRAPHQL_ENDPOINT,
-      WHATSAPP_NUMBER: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER,
-      APP_ENV: process.env.NUXT_PUBLIC_APP_ENV,
-      URL_APP_GESTOR: process.env.NUXT_PUBLIC_APP_URL
+      apiBaseUrl: process.env.NUXT_PUBLIC_GRAPHQL_ENDPOINT,
+      whatsAppNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER,
+      appEnv: process.env.NUXT_PUBLIC_APP_ENV,
+      urlAppGestor: process.env.NUXT_PUBLIC_APP_URL
     }
   },
   app: {
     head: {
       titleTemplate: '%s | Augile',
-      title: 'Gestão Automotiva Inteligente'
+      title: 'Gestor Automotivo Inteligente'
     }
   }
 })

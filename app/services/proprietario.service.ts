@@ -1,5 +1,4 @@
-import { gql } from 'graphql-request'
-import { createGraphqlClient } from '~/config/graphql'
+import { useApi } from '~/config/axios'
 
 export type RegistrarProprietarioInput = {
   cpf: string
@@ -14,22 +13,11 @@ export type RegistrarProprietarioResponse = {
 }
 
 export async function registrarProprietario(
-  data: RegistrarProprietarioInput
+  payload: RegistrarProprietarioInput
 ): Promise<RegistrarProprietarioResponse> {
-  const client = createGraphqlClient()
+  const api = useApi()
 
-  const mutation = gql`
-    mutation RegistrarProprietario($data: RegistrarProprietarioTenancyInput!) {
-      registrarProprietario(data: $data) {
-        tenancyId
-        status
-      }
-    }
-  `
+  const { data } = await api.post<RegistrarProprietarioResponse>('/auth/registrar', payload)
 
-  const { registrarProprietario } = await client.request<{
-    registrarProprietario: RegistrarProprietarioResponse
-  }>(mutation, { data })
-
-  return registrarProprietario
+  return data
 }
