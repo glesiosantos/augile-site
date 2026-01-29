@@ -4,6 +4,7 @@
       <HeroApp />
       <FeaturesApp />
       <PlanComparison /> 
+      <PlatformStats />
       <ConversationApp />
     </main>
     <WhatsappFloat />

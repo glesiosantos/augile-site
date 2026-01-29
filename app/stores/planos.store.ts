@@ -11,10 +11,10 @@ export const usePlanosStore = defineStore('planos', {
 
   getters: {
     planoFree: state =>
-      state.planos.find(p => p.tipo === 'FREE') ?? null,
+      state.planos.find(p => p.tipo === 'GRATUITO') ?? null,
 
     planosPagos: state =>
-      state.planos.filter(p => p.tipo !== 'FREE')
+      state.planos.filter(p => p.tipo !== 'GRATUITO')
   },
 
   actions: {

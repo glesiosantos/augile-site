@@ -1,5 +1,5 @@
 <template>
-  <section class="relative min-h-screen flex items-center">
+  <section id="teste-gratis" class="relative min-h-screen flex items-center">
     <!-- IMAGEM DE FUNDO -->
     <img
       src="/assets/imgs/oficina-mecanica.webp"

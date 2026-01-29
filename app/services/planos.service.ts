@@ -1,20 +1,31 @@
 import { useApi } from '~/config/axios'
 
-export type TipoPlano = 'FREE' | 'BASIC' | 'PRO' | 'ENTERPRISE'
+export type TipoPlano = 'GRATUITO' | 'BASICO'
 
 export type PlanoBase = {
   id: string
   titulo: string
   tipo: TipoPlano
+
   preco: number
   precoPromocional?: number | null
+
   maxFiliais: number
   maxUsuarios: number
-  trialDays: number
+  maxServicos?: number | null
+  maxOSPorMes?: number | null
+
+  permiteEstoque: boolean
+  permiteRelatorios: boolean
+
+  trialDays?: number
+  eDestaque?: boolean
+  ePromocao?: boolean
 }
 
 export type PlanoComPrecoFinal = PlanoBase & {
   precoFinal: number
+  temPromocao: boolean
 }
 
 function calcularPrecoFinal(plano: PlanoBase): number {
@@ -28,8 +39,16 @@ export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
 
   const { data } = await api.get<PlanoBase[]>('/planos')
 
-  return data.map(plano => ({
-    ...plano,
-    precoFinal: calcularPrecoFinal(plano)
-  }))
+  return data.map((plano): PlanoComPrecoFinal => {
+    const temPromocao =
+      typeof plano.precoPromocional === 'number' &&
+      plano.precoPromocional < plano.preco
+
+    return {
+      ...plano,
+      precoFinal: temPromocao ? plano.precoPromocional! : plano.preco,
+      temPromocao
+    }
+  })
 }
+
