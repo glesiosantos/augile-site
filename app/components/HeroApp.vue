@@ -58,40 +58,61 @@
           Leva menos de 1 minuto. Sem cartão de crédito.
         </p>
 
-        <form class="space-y-4">
-          <input
-            type="text"
-            placeholder="CPF"
-            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500"
-          >
+        <form class="space-y-4" @submit.prevent="submit()">
+          <div class="space-y-4 mb-6">
+            <div>
+              <input
+                inputmode="numeric"
+                maxlength="14"
+                class="w-full border rounded-lg px-4 py-3"
+                placeholder="CPF"
+                :value="cpf"
+                @keydown="onlyNumbers"
+                @paste.prevent="onPasteCpf"
+                @input="onCpfInput"
+              >
+              <p v-if="errors.cpf" class="text-red-500 text-sm mt-1">{{ errors.cpf }}</p>
+            </div>
 
-          <input
-            type="text"
-            placeholder="Nome completo"
-            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500"
-          >
+            <div>
+              <input
+                v-model="nome"
+                class="w-full border rounded-lg px-4 py-3"
+                placeholder="Nome completo"
+              >
+              <p v-if="errors.nome" class="text-red-500 text-sm mt-1">{{ errors.nome }}</p>
+            </div>
 
-          <input
-            type="text"
-            placeholder="WhatsApp (99) 99999-9999"
-            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500"
-          >
+            <div>
+              <input
+                inputmode="numeric"
+                maxlength="15"
+                class="w-full border rounded-lg px-4 py-3"
+                placeholder="(99) 9.9999-9999"
+                :value="whatsapp"
+                @keydown="onlyNumbers"
+                @paste.prevent="onPasteWhatsApp"
+                @input="onWhatsAppInput"
+              >
+              <p v-if="errors.whatsapp" class="text-red-500 text-sm mt-1">{{ errors.whatsapp }}</p>
+            </div>
 
-          <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
-          >
-            Começar grátis agora
-          </button>
+            <button
+              type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+            >
+              Começar grátis agora
+            </button>
 
-          <p class="text-xs text-center mt-2 text-green-600 font-medium">
-            ✔ Plano gratuito para sempre disponível
-          </p>
+            <p class="text-xs text-center mt-2 text-green-600 font-medium">
+              ✔ Plano gratuito para sempre disponível
+            </p>
 
-          <p class="text-xs text-slate-500 text-center">
-            🔒 Usamos seu CPF para identificação e enviamos o acesso pelo WhatsApp.
-            Sem spam. Sem compromisso.
-          </p>
+            <p class="text-xs text-slate-500 text-center">
+              🔒 Usamos seu CPF para identificação e enviamos o acesso pelo WhatsApp.
+              Sem spam. Sem compromisso.
+            </p>
+          </div>
         </form>
       </div>
     </div>
@@ -100,17 +121,97 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { registrarProprietario } from '~/services/proprietario.service'
 import { usePlanosStore } from '~/stores/planos.store'
+import { maskCPF, isValidCPF } from '~/utils/cpf'
+import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
+
+const route = useRoute()
 
 const planosStore = usePlanosStore()
 await planosStore.carregar()
 
 const { planoFree } = storeToRefs(planosStore)
 
-const checkoutLink = computed(() =>
-  planoFree.value
-    ? `/checkout?plano=${planoFree.value.id}`
-    : '/checkout'
-)
+const isTeste = computed(() => plano.value?.tipo === 'GRATUITO')
+
+const nome = ref('')
+const cpf = ref('')
+const whatsapp = ref('')
+const pagamento = ref<'cartao' | 'pix' | null>(null)
+
+const errors = ref({
+  nome: '',
+  cpf: '',
+  whatsapp: ''
+})
+
+function onCpfInput(e: Event) {
+  cpf.value = maskCPF((e.target as HTMLInputElement).value)
+}
+
+function onlyNumbers(e: KeyboardEvent) {
+  const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
+  if (allowed.includes(e.key)) return
+  if (!/^\d$/.test(e.key)) e.preventDefault()
+}
+
+function onPasteCpf(e: ClipboardEvent) {
+  cpf.value = maskCPF(e.clipboardData?.getData('text') ?? '')
+}
+
+function onPasteWhatsApp(e: ClipboardEvent) {
+  whatsapp.value = maskWhatsApp(e.clipboardData?.getData('text') ?? '')
+}
+
+function onWhatsAppInput(e: Event) {
+  whatsapp.value = maskWhatsApp((e.target as HTMLInputElement).value)
+}
+
+function normalizeWhatsApp(value: string) {
+  const digits = value.replace(/\D/g, '')
+  return digits.startsWith('55') ? digits : `55${digits}`
+}
+
+function validate() {
+  errors.value = { nome: '', cpf: '', whatsapp: '' }
+
+  if (nome.value.trim().split(' ').length < 2) {
+    errors.value.nome = 'Informe seu nome completo'
+  }
+
+  if (!isValidCPF(cpf.value)) {
+    errors.value.cpf = 'CPF inválido'
+  }
+
+  if (!isValidWhatsApp(whatsapp.value)) {
+    errors.value.whatsapp = 'WhatsApp inválido'
+  }
+
+  if (!isTeste.value && !pagamento.value) {
+    alert('Selecione a forma de pagamento')
+    return false
+  }
+
+  return true
+}
+
+async function submit() {
+  if (!validate() || !plano.value) return
+
+  try {
+    await registrarProprietario({
+      cpf: cpf.value.replace(/\D/g, ''),
+      nomeCompleto: nome.value.trim(),
+      whatsapp: normalizeWhatsApp(whatsapp.value),
+      idPlano: plano.value.id
+    })
+
+    navigateTo('/sucesso')
+  } catch (error) {
+    console.error('Erro ao registrar proprietário', error)
+    alert('Não foi possível concluir o cadastro. Tente novamente.')
+  }
+}
 </script>
 
