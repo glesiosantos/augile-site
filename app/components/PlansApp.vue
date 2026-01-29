@@ -54,7 +54,5 @@ await planosStore.carregar()
 const { planos, carregando, erro } = storeToRefs(planosStore)
 
 // ✅ REGRA OFICIAL: plano pago ≠ FREE
-const planosPagos = computed(() =>
-  planos.value.filter(plano => plano.tipo !== 'FREE')
-)
+const planosPagos = computed(() =>planos.value)
 </script>

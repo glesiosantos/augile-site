@@ -4,51 +4,42 @@
       <!-- Headline -->
       <div class="text-center max-w-3xl mx-auto mb-16">
         <h2 class="text-4xl font-bold text-slate-900 mb-4">
-          Tudo o que sua oficina precisa para crescer
+          Comece organizado. Evolua no seu ritmo.
         </h2>
         <p class="text-lg text-slate-600">
-          Menos bagunça, mais controle e decisões mais inteligentes
-          para aumentar seu faturamento.
+          Use o plano gratuito para organizar sua oficina
+          e ative recursos avançados quando precisar.
         </p>
       </div>
 
       <!-- Grid -->
-      <div class="grid md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <FeatureCard
-          icon="🛠️"
-          title="Ordens de Serviço Inteligentes"
-          text="Acompanhe cada serviço em tempo real, do orçamento à entrega do veículo."
-          highlight
+          icon="🧾"
+          title="Ordens de Serviço"
+          text="Crie e gerencie até 20 ordens de serviço por mês."
+          badge="Gratuito"
         />
 
         <FeatureCard
-          icon="💰"
-          title="Financeiro sem Surpresas"
-          text="Controle entradas, saídas e lucros com clareza e relatórios automáticos."
-        />
-
-        <FeatureCard
-          icon="👥"
-          title="Equipe Organizada"
-          text="Defina permissões e acompanhe a produtividade da sua equipe."
+          icon="👤"
+          title="Clientes e Veículos"
+          text="Mantenha o histórico completo de clientes e veículos atendidos."
+          badge="Gratuito"
         />
 
         <FeatureCard
           icon="📅"
-          title="Agendamentos Otimizados"
-          text="Evite filas, atrasos e confusão com uma agenda simples e visual."
+          title="Agenda Simples"
+          text="Organize os atendimentos do dia com mais clareza."
+          badge="Gratuito"
         />
 
         <FeatureCard
-          icon="📊"
-          title="Relatórios que Ajudam a Decidir"
-          text="Veja o que dá lucro, o que precisa melhorar e onde investir."
-        />
-
-        <FeatureCard
-          icon="🔒"
-          title="Segurança Profissional"
-          text="Seus dados protegidos com tecnologia segura e backups automáticos."
+          icon="🛠️"
+          title="Serviços Cadastrados"
+          text="Cadastre até 10 serviços para agilizar o atendimento."
+          badge="Gratuito"
         />
       </div>
     </div>

@@ -3,7 +3,7 @@
     <main>
       <HeroApp />
       <FeaturesApp />
-      <PlansApp />
+      <PlanComparison /> 
       <ConversationApp />
     </main>
     <WhatsappFloat />
