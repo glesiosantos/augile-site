@@ -123,18 +123,96 @@
 import { storeToRefs } from 'pinia'
 import { registrarProprietario } from '~/services/proprietario.service'
 import { usePlanosStore } from '~/stores/planos.store'
+import { maskCPF, isValidCPF } from '~/utils/cpf'
+import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 
-/* ===============================
-   PLANOS
-================================ */
 const planosStore = usePlanosStore()
 await planosStore.carregar()
 
 const { planoFree } = storeToRefs(planosStore)
-
 const checkoutLink = computed(() =>
   planoFree.value
     ? `/checkout?plano=${planoFree.value.id}`
     : '/checkout'
 )
+
+const nome = ref('')
+const cpf = ref('')
+const whatsapp = ref('')
+
+const errors = ref({
+  nome: '',
+  cpf: '',
+  whatsapp: ''
+})
+
+function onCpfInput(e: Event) {
+  cpf.value = maskCPF((e.target as HTMLInputElement).value)
+}
+
+function onlyNumbers(e: KeyboardEvent) {
+  const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
+  if (allowed.includes(e.key)) return
+  if (!/^\d$/.test(e.key)) e.preventDefault()
+}
+
+function onPasteCpf(e: ClipboardEvent) {
+  cpf.value = maskCPF(e.clipboardData?.getData('text') ?? '')
+}
+
+function onPasteWhatsApp(e: ClipboardEvent) {
+  whatsapp.value = maskWhatsApp(e.clipboardData?.getData('text') ?? '')
+}
+
+function onWhatsAppInput(e: Event) {
+  whatsapp.value = maskWhatsApp((e.target as HTMLInputElement).value)
+}
+
+function normalizeWhatsApp(value: string) {
+  const digits = value.replace(/\D/g, '')
+  return digits.startsWith('55') ? digits : `55${digits}`
+}
+
+/* ===============================
+   VALIDATION
+================================ */
+function validate() {
+  errors.value = { nome: '', cpf: '', whatsapp: '' }
+
+  if (nome.value.trim().split(' ').length < 2) {
+    errors.value.nome = 'Informe seu nome completo'
+  }
+
+  if (!isValidCPF(cpf.value)) {
+    errors.value.cpf = 'CPF inválido'
+  }
+
+  if (!isValidWhatsApp(whatsapp.value)) {
+    errors.value.whatsapp = 'WhatsApp inválido'
+  }
+
+  return !errors.value.nome && !errors.value.cpf && !errors.value.whatsapp
+}
+
+async function submit() {
+  if (!validate()) return
+  if (!planoFree.value) {
+    alert('Plano gratuito indisponível no momento.')
+    return
+  }
+
+  try {
+    await registrarProprietario({
+      cpf: cpf.value.replace(/\D/g, ''),
+      nomeCompleto: nome.value.trim(),
+      whatsapp: normalizeWhatsApp(whatsapp.value),
+      idPlano: planoFree.value.id // ✅ AQUI ESTÁ O AJUSTE-CHAVE
+    })
+
+    navigateTo('/sucesso')
+  } catch (error) {
+    console.error('Erro ao registrar proprietário', error)
+    alert('Não foi possível concluir o cadastro. Tente novamente.')
+  }
+}
 </script>
