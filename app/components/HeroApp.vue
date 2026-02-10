@@ -126,19 +126,20 @@ import { usePlanosStore } from '~/stores/planos.store'
 import { maskCPF, isValidCPF } from '~/utils/cpf'
 import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 
-const route = useRoute()
-
+/* ===============================
+   PLANOS
+================================ */
 const planosStore = usePlanosStore()
 await planosStore.carregar()
 
 const { planoFree } = storeToRefs(planosStore)
 
-const isTeste = computed(() => plano.value?.tipo === 'GRATUITO')
-
+/* ===============================
+   FORM STATE
+================================ */
 const nome = ref('')
 const cpf = ref('')
 const whatsapp = ref('')
-const pagamento = ref<'cartao' | 'pix' | null>(null)
 
 const errors = ref({
   nome: '',
@@ -146,6 +147,9 @@ const errors = ref({
   whatsapp: ''
 })
 
+/* ===============================
+   MASKS & HELPERS
+================================ */
 function onCpfInput(e: Event) {
   cpf.value = maskCPF((e.target as HTMLInputElement).value)
 }
@@ -173,6 +177,9 @@ function normalizeWhatsApp(value: string) {
   return digits.startsWith('55') ? digits : `55${digits}`
 }
 
+/* ===============================
+   VALIDATION
+================================ */
 function validate() {
   errors.value = { nome: '', cpf: '', whatsapp: '' }
 
@@ -188,23 +195,25 @@ function validate() {
     errors.value.whatsapp = 'WhatsApp inválido'
   }
 
-  if (!isTeste.value && !pagamento.value) {
-    alert('Selecione a forma de pagamento')
-    return false
-  }
-
-  return true
+  return !errors.value.nome && !errors.value.cpf && !errors.value.whatsapp
 }
 
+/* ===============================
+   SUBMIT
+================================ */
 async function submit() {
-  if (!validate() || !plano.value) return
+  if (!validate()) return
+  if (!planoFree.value) {
+    alert('Plano gratuito indisponível no momento.')
+    return
+  }
 
   try {
     await registrarProprietario({
       cpf: cpf.value.replace(/\D/g, ''),
       nomeCompleto: nome.value.trim(),
       whatsapp: normalizeWhatsApp(whatsapp.value),
-      idPlano: plano.value.id
+      idPlano: planoFree.value.id // ✅ AQUI ESTÁ O AJUSTE-CHAVE
     })
 
     navigateTo('/sucesso')
@@ -214,4 +223,3 @@ async function submit() {
   }
 }
 </script>
-
