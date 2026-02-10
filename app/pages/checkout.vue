@@ -196,7 +196,7 @@ const plano = computed(() => {
   return planos.value.find(p => p.id === id) ?? planoFree.value
 })
 
-const isTeste = computed(() => plano.value?.tipo === 'FREE')
+const isTeste = computed(() => plano.value?.tipo === 'GRATUITO')
 
 const nome = ref('')
 const cpf = ref('')
