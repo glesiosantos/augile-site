@@ -28,12 +28,6 @@ export type PlanoComPrecoFinal = PlanoBase & {
   temPromocao: boolean
 }
 
-function calcularPrecoFinal(plano: PlanoBase): number {
-  const base = Number(plano.preco)
-  const promo = Number(plano.precoPromocional)
-  return promo > 0 ? promo : base
-}
-
 export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
   const api = useApi()
 

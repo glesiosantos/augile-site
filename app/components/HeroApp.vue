@@ -99,7 +99,11 @@
 
             <button
               type="submit"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+              :disabled="!formularioValido"
+              class="w-full py-3 rounded-lg font-semibold transition"
+              :class="formularioValido
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-slate-300 text-slate-500 cursor-not-allowed'"
             >
               Começar grátis agora
             </button>
@@ -120,21 +124,20 @@
 </template>
 
 <script setup lang="ts">
+import { isAxiosError } from 'axios'
 import { storeToRefs } from 'pinia'
 import { registrarProprietario } from '~/services/proprietario.service'
 import { usePlanosStore } from '~/stores/planos.store'
 import { maskCPF, isValidCPF } from '~/utils/cpf'
 import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
+import { useToast } from 'vue-toastification'
 
 const planosStore = usePlanosStore()
 await planosStore.carregar()
 
+const toast = useToast()
+
 const { planoFree } = storeToRefs(planosStore)
-const checkoutLink = computed(() =>
-  planoFree.value
-    ? `/checkout?plano=${planoFree.value.id}`
-    : '/checkout'
-)
 
 const nome = ref('')
 const cpf = ref('')
@@ -143,11 +146,17 @@ const whatsapp = ref('')
 const errors = ref({
   nome: '',
   cpf: '',
-  whatsapp: ''
+  whatsapp: '' 
 })
 
 function onCpfInput(e: Event) {
   cpf.value = maskCPF((e.target as HTMLInputElement).value)
+
+  if (cpf.value.replace(/\D/g, '').length === 11) {
+    if (!isValidCPF(cpf.value)) {
+      errors.value.cpf = 'CPF inválido'
+    } 
+  }
 }
 
 function onlyNumbers(e: KeyboardEvent) {
@@ -173,9 +182,6 @@ function normalizeWhatsApp(value: string) {
   return digits.startsWith('55') ? digits : `55${digits}`
 }
 
-/* ===============================
-   VALIDATION
-================================ */
 function validate() {
   errors.value = { nome: '', cpf: '', whatsapp: '' }
 
@@ -194,8 +200,26 @@ function validate() {
   return !errors.value.nome && !errors.value.cpf && !errors.value.whatsapp
 }
 
+const formularioValido = computed(() => {
+  if (!isValidCPF(cpf.value)) return false
+  if (!nome.value) return false
+  if (!whatsapp.value) return false
+  if (errors.value.cpf) return false
+  if (errors.value.nome) return false
+  if (errors.value.whatsapp) return false
+
+  return true
+})
+
+function limparFormulario() {
+  cpf.value = ''
+  nome.value = ''
+  whatsapp.value = ''
+}
+
 async function submit() {
   if (!validate()) return
+  
   if (!planoFree.value) {
     alert('Plano gratuito indisponível no momento.')
     return
@@ -206,13 +230,24 @@ async function submit() {
       cpf: cpf.value.replace(/\D/g, ''),
       nomeCompleto: nome.value.trim(),
       whatsapp: normalizeWhatsApp(whatsapp.value),
-      idPlano: planoFree.value.id // ✅ AQUI ESTÁ O AJUSTE-CHAVE
+      idPlano: planoFree.value.id
     })
+    toast.success('Cadastro realizado com sucesso!') 
+  } catch (error: unknown) {
+    let message = 'Erro ao registrar proprietário'
 
-    navigateTo('/sucesso')
-  } catch (error) {
-    console.error('Erro ao registrar proprietário', error)
-    alert('Não foi possível concluir o cadastro. Tente novamente.')
-  }
+    if (isAxiosError(error)) {
+      const backendMessage = error.response?.data?.message
+
+      if (Array.isArray(backendMessage)) {
+        message = backendMessage[0]
+      } else if (backendMessage) {
+        message = backendMessage
+      }
+    }
+    toast.error(message)
+  } finally {
+    limparFormulario()
+  } 
 }
 </script>

@@ -3,7 +3,8 @@
     <main>
       <HeroApp />
       <FeaturesApp />
-      <PlanComparison /> 
+      <!-- <PlanComparison />  -->
+      <PlanosOuCadastro />
       <PlatformStats />
       <ConversationApp />
     </main>
@@ -12,4 +13,5 @@
   </div>
 </template>
 <script lang="ts">
+
 </script>

@@ -16,8 +16,6 @@ export async function registrarProprietario(
   payload: RegistrarProprietarioInput
 ): Promise<RegistrarProprietarioResponse> {
   const api = useApi()
-
   const { data } = await api.post<RegistrarProprietarioResponse>('/auth/registrar', payload)
-
   return data
 }
