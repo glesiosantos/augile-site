@@ -45,11 +45,11 @@
                   v-if="planoBasico?.ePromocao"
                   class="text-sm line-through opacity-80"
                 >
-                  R$ {{ planoBasico?.preco }}
+                  R$ {{ planoBasico?.precoPromocional }}
                 </p>
 
                 <p class="text-2xl font-bold">
-                  R$ {{ planoBasico?.precoPromocional }} / mês
+                  R$ {{ planoBasico?.preco }} / mês
                 </p>
               </div>
             </div>
@@ -371,6 +371,24 @@ const rows = computed(() => {
       basic: planoBasico.value.maxServicos
         ? `Até ${planoBasico.value.maxServicos}`
         : 'Ilimitados'
+    },
+    {
+      label: 'Produtos cadastrados',
+      free: planoGratuito.value.maxProdutos
+        ? `Até ${planoGratuito.value.maxProdutos}`
+        : null,
+      basic: planoBasico.value.maxProdutos
+        ? `Até ${planoBasico.value.maxProdutos}`
+        : 'Ilimitados'
+    },
+    {
+      label: 'Filiais',
+      free: planoGratuito.value.maxFiliais
+        ? `Até ${planoGratuito.value.maxFiliais}`
+        : null,
+      basic: planoBasico.value.maxFiliais
+        ? `Até ${planoBasico.value.maxFiliais}`
+        : 0
     },
     {
       label: 'Cadastro de clientes e veículos',

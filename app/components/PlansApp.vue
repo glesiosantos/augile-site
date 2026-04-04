@@ -33,6 +33,7 @@
           :features="[
             `${plano.maxFiliais} filial(is)`,
             `${plano.maxUsuarios} usuário(s)`,
+            `${plano.maxServicos} serviços(s)`,
             'Acesso web e mobile',
             'Suporte via WhatsApp'
           ]"

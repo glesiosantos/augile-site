@@ -11,6 +11,7 @@
         </p>
       </div>
 
+      oi
       <!-- Tabela -->
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <!-- Cabeçalho -->
@@ -29,17 +30,22 @@
 
           <!-- Básico -->
           <div class="px-6 py-2 text-center bg-blue-600 text-white">
-            <p class="text-sm font-semibold uppercase opacity-90">
-              {{ planoBasico?.titulo }}
-            </p>
             <p
               v-if="planoBasico?.ePromocao"
               class="text-sm line-through opacity-80"
             >
               R$ {{ planoBasico?.preco }}
             </p>
+
+            <!-- Preço principal -->
             <p class="text-2xl font-bold">
-              R$ {{ planoBasico?.precoPromocional }} / mês
+              R$
+              {{
+                planoBasico?.ePromocao
+                  ? planoBasico?.precoPromocional
+                  : planoBasico?.preco
+              }}
+              / mês
             </p>
           </div>
         </div>

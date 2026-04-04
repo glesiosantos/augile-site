@@ -13,6 +13,7 @@ export type PlanoBase = {
   maxFiliais: number
   maxUsuarios: number
   maxServicos?: number | null
+  maxProdutos?: number | null
   maxOSPorMes?: number | null
 
   permiteEstoque: boolean
