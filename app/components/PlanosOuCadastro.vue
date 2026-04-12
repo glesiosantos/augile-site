@@ -18,6 +18,7 @@
         <!-- ===================================================
              ETAPA 1 → PLANOS
         ==================================================== -->
+
         <div v-if="etapa === 'planos'" key="planos">
           <!-- ================= DESKTOP (TABELA) ================= -->
           <div class="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -45,11 +46,11 @@
                   v-if="planoBasico?.ePromocao"
                   class="text-sm line-through opacity-80"
                 >
-                  R$ {{ planoBasico?.precoPromocional }}
+                  R$ {{ planoBasico?.preco }}
                 </p>
 
                 <p class="text-2xl font-bold">
-                  R$ {{ planoBasico?.preco }} / mês
+                  R$ {{ planoBasico?.ePromocao ? planoBasico.precoPromocional : planoBasico?.preco }} / mês
                 </p>
               </div>
             </div>
@@ -392,6 +393,11 @@ const rows = computed(() => {
     },
     {
       label: 'Cadastro de clientes e veículos',
+      free: 'Ilimitados',
+      basic: 'Ilimitados'
+    },
+    {
+      label: 'Cadastro de Fornecedores',
       free: 'Ilimitados',
       basic: 'Ilimitados'
     }
