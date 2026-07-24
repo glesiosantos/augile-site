@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* 🔴 OBRIGATÓRIO no Tailwind v4 quando usa @apply */
 @reference utilities;
 
 @theme {
@@ -10,8 +9,26 @@
 
 body {
   @apply bg-white text-slate-800 antialiased;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.input {
-  @apply w-full border rounded-lg px-4 py-3 mb-3;
+html { scroll-behavior: smooth; }
+
+.landing-container { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
+.landing-section { @apply py-18 sm:py-24; }
+.landing-heading { @apply mx-auto mb-10 max-w-3xl text-center sm:mb-14; }
+.landing-heading h2 { @apply text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl; }
+.landing-heading > p:last-child { @apply mt-4 text-lg leading-8 text-slate-600; }
+.landing-eyebrow { @apply mb-3 text-sm font-bold uppercase tracking-[.16em] text-blue-700; }
+.landing-button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700; }
+.landing-button-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-center text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700; }
+.landing-input { @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-blue-600 focus:ring-3 focus:ring-blue-100; }
+.landing-input[aria-invalid="true"] { @apply border-red-600 focus:border-red-600 focus:ring-red-100; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
+
+.modal-enter-active, .modal-leave-active { transition: opacity .18s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }

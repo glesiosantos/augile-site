@@ -4,6 +4,19 @@ import vue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 
 export default [
+  // Nuxt and dependency artifacts are generated code and must not be linted.
+  {
+    ignores: [
+      '.nuxt/**',
+      '.output/**',
+      '.data/**',
+      '.nitro/**',
+      '.cache/**',
+      'dist/**',
+      'node_modules/**'
+    ]
+  },
+
   // Base JS
   js.configs.recommended,
 

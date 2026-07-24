@@ -26,8 +26,7 @@ export const usePlanosStore = defineStore('planos', {
 
       try {
         this.planos = await carregarPlanos()
-      } catch (e) {
-        console.error(e)
+      } catch {
         this.erro = true
       } finally {
         this.carregando = false

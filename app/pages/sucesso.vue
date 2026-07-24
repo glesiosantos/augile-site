@@ -1,16 +1,10 @@
 <template>
   <section
     class="relative min-h-screen flex items-end
-           bg-black overflow-hidden"
+           overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700"
   >
-    <!-- BACKGROUND ILUSTRAÇÃO -->
-    <div
-      class="absolute inset-0 bg-center bg-cover"
-      style="background-image: url('/imgs/sucesso-ilustracao.png')"
-    />
-
     <!-- OVERLAY PARA CONTRASTE -->
-    <div class="absolute inset-0 bg-slate-900/70" />
+    <div class="absolute inset-0 bg-slate-950/35" />
 
     <!-- CONTEÚDO -->
     <div
@@ -27,7 +21,7 @@
       >
         <!-- LOGO -->
         <img
-          src="/imgs/augile_logo_branco_completo.png"
+          src="~/assets/imgs/augile_logo_branco_completo.png"
           alt="Augile"
           class="mx-auto mb-6 h-14 md:h-16"
         >

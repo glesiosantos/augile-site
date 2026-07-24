@@ -3,12 +3,12 @@
     :href="whatsappUrl"
     target="_blank"
     rel="noopener"
-    class="fixed bottom-6 right-6 z-50 flex items-center gap-3
-           bg-green-500 hover:bg-green-600
-           px-5 py-3 rounded-full shadow-lg transition"
+    aria-label="Falar com a Augile pelo WhatsApp"
+    class="fixed bottom-4 right-4 z-30 flex min-h-12 items-center gap-3 rounded-full bg-green-600 px-4 py-3 shadow-lg transition hover:bg-green-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:bottom-6 sm:right-6 sm:px-5"
+    @click="track('whatsapp_click', { source: 'floating_button' })"
   >
     <img
-      src="/assets/imgs/whatsapp.png"
+      src="~/assets/imgs/whatsapp.png"
       alt="WhatsApp"
       class="w-6 h-6"
     >
@@ -20,6 +20,7 @@
 </template>
 <script setup lang="ts">
 const config = useRuntimeConfig()
+const { track } = useLanding()
 
 const whatsappUrl = computed(() => {
   const number = config.public.whatsAppNumber
