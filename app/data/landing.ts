@@ -42,36 +42,36 @@ export const faqItems = [
   {
     question: 'O plano gratuito tem prazo para acabar?',
     answer:
-      'Não. O plano gratuito não possui prazo de encerramento, desde que sejam respeitados os limites apresentados na seção de planos.',
+      'Não. O plano gratuito não possui prazo de encerramento, desde que sejam respeitados os limites apresentados na seção de planos.'
   },
   {
     question: 'Preciso cadastrar um cartão para começar?',
     answer:
-      'Não. Você pode criar sua conta e iniciar o período de teste sem cadastrar um cartão.',
+      'Não. Você pode criar sua conta e iniciar o período de teste sem cadastrar um cartão.'
   },
   {
     question: 'O que acontece depois dos 14 dias de teste?',
     answer:
-      'Após os 14 dias, sua conta será transferida automaticamente para o plano gratuito. Os limites de serviços, usuários e ordens de serviço serão ajustados conforme as condições desse plano.',
+      'Após os 14 dias, sua conta será transferida automaticamente para o plano gratuito. Os limites de serviços, usuários e ordens de serviço serão ajustados conforme as condições desse plano.'
   },
   {
     question: 'Posso mudar de plano depois?',
     answer:
-      'Sim. Você pode mudar de plano quando desejar, sem perder os dados cadastrados.',
+      'Sim. Você pode mudar de plano quando desejar, sem perder os dados cadastrados.'
   },
   {
     question: 'Meus dados ficam salvos se eu mudar de plano?',
     answer:
-      'Sim. Seus dados permanecem salvos. Apenas os recursos e limites disponíveis serão ampliados ou reduzidos de acordo com o plano escolhido.',
+      'Sim. Seus dados permanecem salvos. Apenas os recursos e limites disponíveis serão ampliados ou reduzidos de acordo com o plano escolhido.'
   },
   {
     question: 'Como recebo o acesso?',
     answer:
-      'Após concluir o cadastro, você receberá um link para acessar a plataforma e configurar sua conta.',
+      'Após concluir o cadastro, você receberá um link para acessar a plataforma e configurar sua conta.'
   },
   {
     question: 'A Augile funciona no celular?',
     answer:
-      'Sim. A Augile utiliza a tecnologia PWA, que permite acessar a plataforma pelo navegador e adicionar um atalho à tela inicial do celular, proporcionando uma experiência semelhante à de um aplicativo.',
-  },
+      'Sim. A Augile utiliza a tecnologia PWA, que permite acessar a plataforma pelo navegador e adicionar um atalho à tela inicial do celular, proporcionando uma experiência semelhante à de um aplicativo.'
+  }
 ] as const
