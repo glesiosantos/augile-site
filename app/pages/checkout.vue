@@ -155,6 +155,13 @@
           {{ isTeste ? 'Teste gratuito' : 'Assinatura mensal' }}
         </p>
 
+        <div
+          v-if="plano.temPromocao"
+          class="mb-4 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700"
+        >
+          Oferta especial
+        </div>
+
         <ul class="text-sm text-slate-600 space-y-2 mb-6">
           <li>✔ {{ plano.maxFiliais }} filial(is)</li>
           <li>✔ {{ plano.maxUsuarios }} usuário(s)</li>
@@ -162,11 +169,16 @@
           <li>✔ Suporte via WhatsApp</li>
         </ul>
 
-        <div class="border-t pt-4 flex justify-between items-center">
+        <div class="border-t pt-4 flex justify-between items-end gap-4">
           <span class="text-lg font-semibold">Total</span>
-          <span class="text-2xl font-bold text-blue-600">
-            R$ {{ plano.precoFinal.toFixed(2).replace('.', ',') }}
-          </span>
+          <div class="text-right">
+            <p v-if="plano.temPromocao" class="text-sm text-slate-400 line-through">
+              R$ {{ money(plano.preco) }}
+            </p>
+            <p :class="['text-2xl font-bold', plano.temPromocao ? 'text-emerald-600' : 'text-blue-600']">
+              R$ {{ money(plano.precoFinal) }}
+            </p>
+          </div>
         </div>
       </aside>
     </div>
@@ -197,6 +209,10 @@ const plano = computed(() => {
 })
 
 const isTeste = computed(() => plano.value?.tipo === 'GRATUITO')
+const money = (value: number) => new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+}).format(value)
 
 const nome = ref('')
 const cpf = ref('')
