@@ -13,18 +13,23 @@ export type LandingEvent =
   | 'faq_expand'
 
 export function useLanding() {
+  const analytics = useAnalytics()
   const signupOpen = useState('landing-signup-open', () => false)
   const selectedPlan = useState<TipoPlano>('landing-selected-plan', () => 'GRATUITO')
 
   function track(event: LandingEvent, detail: Record<string, string> = {}) {
     if (!import.meta.client) return
     window.dispatchEvent(new CustomEvent('augile:landing', { detail: { event, ...detail } }))
+    analytics.customEvent(event, detail)
+
+    if (event === 'whatsapp_click') analytics.contact(detail)
   }
 
   function openSignup(plan: TipoPlano = 'GRATUITO', source = 'unknown') {
     selectedPlan.value = plan
     signupOpen.value = true
     track('signup_open', { plan, source })
+    analytics.lead({ plan, source })
   }
 
   return { signupOpen, selectedPlan, openSignup, track }

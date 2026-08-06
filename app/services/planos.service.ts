@@ -35,13 +35,12 @@ export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
   const { data } = await api.get<PlanoBase[]>('/planos')
 
   return data.map((plano): PlanoComPrecoFinal => {
-    const temPromocao =
-      plano.ePromocao === true &&
-      typeof plano.precoPromocional === 'number'
+    const precoPromocional = plano.precoPromocional
+    const temPromocao = plano.ePromocao === true && typeof precoPromocional === 'number'
 
     return {
       ...plano,
-      precoFinal: temPromocao ? plano.precoPromocional : plano.preco,
+      precoFinal: temPromocao ? precoPromocional : plano.preco,
       temPromocao
     }
   })
