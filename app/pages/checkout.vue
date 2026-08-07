@@ -194,12 +194,13 @@ import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 
 const route = useRoute()
 const planosStore = usePlanosStore()
+const { completeRegistration, purchase } = useAnalytics()
 
 useHead({
   title: 'Finalizar assinatura'
 })
 
-await planosStore.carregar()
+await planosStore.carregar(true)
 
 const { planos, planoFree, carregando, erro } = storeToRefs(planosStore)
 
@@ -286,7 +287,16 @@ async function submit() {
       idPlano: plano.value.id
     })
 
-    navigateTo('/sucesso')
+    completeRegistration({ plan: plano.value.tipo })
+    if (!isTeste.value) {
+      purchase({
+        currency: 'BRL',
+        value: plano.value.precoFinal,
+        plan: plano.value.tipo
+      })
+    }
+
+    await navigateTo('/sucesso')
   } catch (error) {
     console.error('Erro ao registrar proprietário', error)
     alert('Não foi possível concluir o cadastro. Tente novamente.')

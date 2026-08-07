@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt', 'nuxt-gtag'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt'],
   devServer: {
     port: 4000
   },
@@ -15,7 +15,10 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
       whatsAppNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER,
-      urlAppGestor: process.env.NUXT_PUBLIC_APP_URL
+      urlAppGestor: process.env.NUXT_PUBLIC_APP_URL,
+      metaPixelId: process.env.NUXT_PUBLIC_META_PIXEL_ID,
+      gaMeasurementId: process.env.NUXT_PUBLIC_GA_ID,
+      gtmId: process.env.NUXT_PUBLIC_GTM_ID
     }
   },
   app: {

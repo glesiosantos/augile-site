@@ -18,8 +18,9 @@ export const usePlanosStore = defineStore('planos', {
   },
 
   actions: {
-    async carregar() {
-      if (this.planos.length) return
+    async carregar(forcarAtualizacao = false) {
+      if (this.carregando) return
+      if (this.planos.length && !forcarAtualizacao) return
 
       this.carregando = true
       this.erro = false
