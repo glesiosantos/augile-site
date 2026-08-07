@@ -14,7 +14,7 @@
       </nav>
       <div class="hidden items-center gap-3 lg:flex">
         <a :href="appUrl" class="inline-flex min-h-11 items-center px-3 text-sm font-semibold text-slate-700 hover:text-blue-700">Entrar</a>
-        <button class="landing-button-primary" @click="openSignup('GRATUITO', 'header')">Começar grátis</button>
+        <button class="landing-button-primary" @click="openSignup('BASICO', 'header')">Testar grátis por 14 dias</button>
       </div>
       <button
         class="inline-flex size-11 items-center justify-center rounded-xl text-slate-800 hover:bg-slate-100 lg:hidden"
@@ -38,7 +38,7 @@
       </nav>
       <div class="grid grid-cols-2 gap-3">
         <a :href="appUrl" class="landing-button-secondary">Entrar</a>
-        <button class="landing-button-primary" @click="openMobileSignup">Começar grátis</button>
+        <button class="landing-button-primary" @click="openMobileSignup">Testar 14 dias</button>
       </div>
     </div>
   </header>
@@ -52,7 +52,7 @@ const menuOpen = ref(false)
 const scrolled = ref(false)
 const { openSignup } = useLanding()
 function onScroll() { scrolled.value = window.scrollY > 16 }
-function openMobileSignup() { menuOpen.value = false; openSignup('GRATUITO', 'mobile_header') }
+function openMobileSignup() { menuOpen.value = false; openSignup('BASICO', 'mobile_header') }
 onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
 onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 </script>

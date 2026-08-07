@@ -7,7 +7,7 @@
           target="_blank"
           rel="noopener noreferrer"
           class="landing-button-secondary mt-7"
-          @click="track('whatsapp_click', { source: 'social_proof' })"
+          @click="track('whatsapp_click', { location: 'pricing' })"
         >Falar no WhatsApp <LandingIcon name="external" class="size-4" /></a>
       </div>
     </div>
