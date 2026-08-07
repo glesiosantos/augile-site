@@ -1,14 +1,14 @@
 import { useApi } from '~/config/axios'
 
-export type TipoPlano = 'GRATUITO' | 'BASICO'
+export type TipoPlano = 'GRATUITO' | 'BASICO' | 'PROFISSIONAL'
 
 export type PlanoBase = {
   id: string
   titulo: string
   tipo: TipoPlano
 
-  preco: number
-  precoPromocional?: number | null
+  preco: number | string
+  precoPromocional?: number | string | null
 
   maxFiliais: number
   maxUsuarios: number
@@ -25,8 +25,17 @@ export type PlanoBase = {
 }
 
 export type PlanoComPrecoFinal = PlanoBase & {
+  preco: number
+  precoPromocional?: number | null
   precoFinal: number
   temPromocao: boolean
+}
+
+function normalizarPreco(value: number | string | null | undefined): number | null {
+  if (value === null || value === undefined || value === '') return null
+
+  const preco = typeof value === 'number' ? value : Number(value.replace(',', '.'))
+  return Number.isFinite(preco) ? preco : null
 }
 
 export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
@@ -35,15 +44,16 @@ export async function carregarPlanos(): Promise<PlanoComPrecoFinal[]> {
   const { data } = await api.get<PlanoBase[]>('/planos')
 
   return data.map((plano): PlanoComPrecoFinal => {
-    const temPromocao =
-      typeof plano.precoPromocional === 'number' &&
-      plano.precoPromocional < plano.preco
+    const preco = normalizarPreco(plano.preco) ?? 0
+    const precoPromocional = normalizarPreco(plano.precoPromocional)
+    const temPromocao = plano.ePromocao === true && precoPromocional !== null
 
     return {
       ...plano,
-      precoFinal: temPromocao ? plano.precoPromocional! : plano.preco,
+      preco,
+      precoPromocional,
+      precoFinal: temPromocao ? precoPromocional : preco,
       temPromocao
     }
   })
 }
-

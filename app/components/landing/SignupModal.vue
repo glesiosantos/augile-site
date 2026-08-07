@@ -11,7 +11,7 @@
           @keydown="onKeydown"
         >
           <div class="flex items-start justify-between gap-6">
-            <div><p class="text-sm font-bold uppercase tracking-wider text-blue-700">{{ selectedPlan === 'BASICO' ? 'Teste do plano Básico' : 'Plano Gratuito' }}</p><h2 id="signup-title" class="mt-2 text-2xl font-extrabold text-slate-950">Crie seu acesso à Augile</h2></div><button
+            <div><p class="text-sm font-bold uppercase tracking-wider text-blue-700">{{ signupPlanTitle }}</p><h2 id="signup-title" class="mt-2 text-2xl font-extrabold text-slate-950">Crie seu acesso à Augile</h2></div><button
               ref="closeButton"
               class="flex size-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"
               aria-label="Fechar cadastro"
@@ -69,7 +69,7 @@
               ><p id="signup-whatsapp-help" class="mt-2 text-xs leading-5 text-slate-500">O link de acesso e o código para entrar serão enviados para este número.</p><p v-if="errors.whatsapp" id="signup-whatsapp-error" class="mt-1 text-sm font-medium text-red-700">{{ errors.whatsapp }}</p>
             </div>
             <div v-if="submitError" role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800">{{ submitError }}</div>
-            <button type="submit" :disabled="submitting" class="landing-button-primary w-full disabled:cursor-wait disabled:opacity-70"><span v-if="submitting">Enviando...</span><span v-else>{{ selectedPlan === 'BASICO' ? 'Testar plano Básico' : 'Começar grátis' }}</span></button>
+            <button type="submit" :disabled="submitting" class="landing-button-primary w-full disabled:cursor-wait disabled:opacity-70"><span v-if="submitting">Enviando...</span><span v-else>{{ signupButtonLabel }}</span></button>
             <p class="text-center text-xs leading-5 text-slate-500">Ao continuar, você envia os dados acima para a criação do seu acesso. Os documentos legais ainda precisam ser publicados no site.</p>
           </form>
         </section>
@@ -85,13 +85,21 @@ import { maskCPF, isValidCPF } from '~/utils/cpf'
 import { maskWhatsApp, normalizeWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 
 const { signupOpen, selectedPlan, track } = useLanding()
+const { completeRegistration } = useAnalytics()
 const store = usePlanosStore(); const { planos } = storeToRefs(store)
 const dialog = ref<HTMLElement | null>(null); const closeButton = ref<HTMLButtonElement | null>(null)
 const nome = ref(''); const cpf = ref(''); const whatsapp = ref(''); const submitting = ref(false); const submitError = ref(''); const started = ref(false)
 const errors = ref<{ nome?: string; cpf?: string; whatsapp?: string }>({})
 let trigger: HTMLElement | null = null
 const selectedPlanData = computed(() => planos.value.find(plan => plan.tipo === selectedPlan.value) ?? null)
-const planDescription = computed(() => selectedPlan.value === 'BASICO' ? `Experimente o plano Básico por ${selectedPlanData.value?.trialDays || 14} dias. Nenhum cartão é solicitado agora.` : 'Comece com o plano Gratuito, sem prazo para acabar e sem cadastrar cartão.')
+const isFreePlan = computed(() => selectedPlan.value === 'GRATUITO')
+const signupPlanTitle = computed(() => isFreePlan.value ? 'Plano Gratuito' : selectedPlanData.value?.titulo ?? 'Plano selecionado')
+const signupButtonLabel = computed(() => isFreePlan.value ? 'Começar grátis' : `Escolher ${selectedPlanData.value?.titulo ?? 'plano'}`)
+const planDescription = computed(() => isFreePlan.value
+  ? 'Comece com o plano Gratuito, sem prazo para acabar e sem cadastrar cartão.'
+  : selectedPlanData.value?.trialDays
+    ? `Experimente o ${selectedPlanData.value.titulo} por ${selectedPlanData.value.trialDays} dias. Nenhum cartão é solicitado agora.`
+    : `Cadastre-se para começar com o ${selectedPlanData.value?.titulo ?? 'plano selecionado'}.`)
 
 watch(signupOpen, async(open) => { if (!import.meta.client) return; if (open) { trigger = document.activeElement as HTMLElement; document.body.style.overflow = 'hidden'; await nextTick(); closeButton.value?.focus() } else { document.body.style.overflow = ''; trigger?.focus() } })
 onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = '' })
@@ -104,5 +112,5 @@ function onWhatsAppInput(event: Event) { whatsapp.value = maskWhatsApp((event.ta
 function onPasteWhatsApp(event: ClipboardEvent) { whatsapp.value = maskWhatsApp(event.clipboardData?.getData('text') ?? ''); delete errors.value.whatsapp }
 function validate() { errors.value = {}; if (nome.value.trim().split(/\s+/).length < 2) errors.value.nome = 'Informe seu nome completo.'; if (!isValidCPF(cpf.value)) errors.value.cpf = 'Informe um CPF válido.'; if (!isValidWhatsApp(whatsapp.value)) errors.value.whatsapp = 'Informe um WhatsApp com DDD e 11 dígitos.'; if (Object.keys(errors.value).length) track('signup_validation_error', { plan: selectedPlan.value }); return Object.keys(errors.value).length === 0 }
 function onKeydown(event: KeyboardEvent) { if (event.key === 'Escape') { close(); return } if (event.key !== 'Tab' || !dialog.value) return; const focusable = [...dialog.value.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href]')]; if (!focusable.length) return; const first = focusable[0]!; const last = focusable[focusable.length - 1]!; if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() } }
-async function submit() { submitError.value = ''; if (!validate()) return; if (!selectedPlanData.value) { submitError.value = 'O plano selecionado está indisponível no momento.'; return } submitting.value = true; try { await registrarProprietario({ cpf: cpf.value.replace(/\D/g, ''), nomeCompleto: nome.value.trim(), whatsapp: normalizeWhatsApp(whatsapp.value), idPlano: selectedPlanData.value.id }); track('signup_success', { plan: selectedPlan.value }); signupOpen.value = false; await navigateTo('/sucesso') } catch (error: unknown) { submitError.value = 'Não foi possível concluir o cadastro. Revise os dados e tente novamente.'; if (isAxiosError(error)) { const message = error.response?.data?.message; if (Array.isArray(message) && message[0]) submitError.value = message[0]; else if (typeof message === 'string') submitError.value = message } } finally { submitting.value = false } }
+async function submit() { submitError.value = ''; if (!validate()) return; if (!selectedPlanData.value) { submitError.value = 'O plano selecionado está indisponível no momento.'; return } submitting.value = true; try { await registrarProprietario({ cpf: cpf.value.replace(/\D/g, ''), nomeCompleto: nome.value.trim(), whatsapp: normalizeWhatsApp(whatsapp.value), idPlano: selectedPlanData.value.id }); track('signup_success', { plan: selectedPlan.value }); completeRegistration({ plan: selectedPlan.value }); signupOpen.value = false; await navigateTo('/sucesso') } catch (error: unknown) { submitError.value = 'Não foi possível concluir o cadastro. Revise os dados e tente novamente.'; if (isAxiosError(error)) { const message = error.response?.data?.message; if (Array.isArray(message) && message[0]) submitError.value = message[0]; else if (typeof message === 'string') submitError.value = message } } finally { submitting.value = false } }
 </script>
