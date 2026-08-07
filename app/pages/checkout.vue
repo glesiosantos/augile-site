@@ -200,7 +200,7 @@ useHead({
   title: 'Finalizar assinatura'
 })
 
-await planosStore.carregar()
+await planosStore.carregar(true)
 
 const { planos, planoFree, carregando, erro } = storeToRefs(planosStore)
 

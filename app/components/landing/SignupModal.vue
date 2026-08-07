@@ -11,7 +11,7 @@
           @keydown="onKeydown"
         >
           <div class="flex items-start justify-between gap-6">
-            <div><p class="text-sm font-bold uppercase tracking-wider text-blue-700">{{ selectedPlan === 'BASICO' ? 'Teste do plano Básico' : 'Plano Gratuito' }}</p><h2 id="signup-title" class="mt-2 text-2xl font-extrabold text-slate-950">Crie seu acesso à Augile</h2></div><button
+            <div><p class="text-sm font-bold uppercase tracking-wider text-blue-700">{{ signupPlanTitle }}</p><h2 id="signup-title" class="mt-2 text-2xl font-extrabold text-slate-950">Crie seu acesso à Augile</h2></div><button
               ref="closeButton"
               class="flex size-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"
               aria-label="Fechar cadastro"
@@ -69,7 +69,7 @@
               ><p id="signup-whatsapp-help" class="mt-2 text-xs leading-5 text-slate-500">O link de acesso e o código para entrar serão enviados para este número.</p><p v-if="errors.whatsapp" id="signup-whatsapp-error" class="mt-1 text-sm font-medium text-red-700">{{ errors.whatsapp }}</p>
             </div>
             <div v-if="submitError" role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800">{{ submitError }}</div>
-            <button type="submit" :disabled="submitting" class="landing-button-primary w-full disabled:cursor-wait disabled:opacity-70"><span v-if="submitting">Enviando...</span><span v-else>{{ selectedPlan === 'BASICO' ? 'Testar plano Básico' : 'Começar grátis' }}</span></button>
+            <button type="submit" :disabled="submitting" class="landing-button-primary w-full disabled:cursor-wait disabled:opacity-70"><span v-if="submitting">Enviando...</span><span v-else>{{ signupButtonLabel }}</span></button>
             <p class="text-center text-xs leading-5 text-slate-500">Ao continuar, você envia os dados acima para a criação do seu acesso. Os documentos legais ainda precisam ser publicados no site.</p>
           </form>
         </section>
@@ -92,7 +92,14 @@ const nome = ref(''); const cpf = ref(''); const whatsapp = ref(''); const submi
 const errors = ref<{ nome?: string; cpf?: string; whatsapp?: string }>({})
 let trigger: HTMLElement | null = null
 const selectedPlanData = computed(() => planos.value.find(plan => plan.tipo === selectedPlan.value) ?? null)
-const planDescription = computed(() => selectedPlan.value === 'BASICO' ? `Experimente o plano Básico por ${selectedPlanData.value?.trialDays || 14} dias. Nenhum cartão é solicitado agora.` : 'Comece com o plano Gratuito, sem prazo para acabar e sem cadastrar cartão.')
+const isFreePlan = computed(() => selectedPlan.value === 'GRATUITO')
+const signupPlanTitle = computed(() => isFreePlan.value ? 'Plano Gratuito' : selectedPlanData.value?.titulo ?? 'Plano selecionado')
+const signupButtonLabel = computed(() => isFreePlan.value ? 'Começar grátis' : `Escolher ${selectedPlanData.value?.titulo ?? 'plano'}`)
+const planDescription = computed(() => isFreePlan.value
+  ? 'Comece com o plano Gratuito, sem prazo para acabar e sem cadastrar cartão.'
+  : selectedPlanData.value?.trialDays
+    ? `Experimente o ${selectedPlanData.value.titulo} por ${selectedPlanData.value.trialDays} dias. Nenhum cartão é solicitado agora.`
+    : `Cadastre-se para começar com o ${selectedPlanData.value?.titulo ?? 'plano selecionado'}.`)
 
 watch(signupOpen, async(open) => { if (!import.meta.client) return; if (open) { trigger = document.activeElement as HTMLElement; document.body.style.overflow = 'hidden'; await nextTick(); closeButton.value?.focus() } else { document.body.style.overflow = ''; trigger?.focus() } })
 onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = '' })
