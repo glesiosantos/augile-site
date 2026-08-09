@@ -9,7 +9,7 @@
               target="_blank"
               rel="noopener noreferrer"
               class="hover:text-white"
-              @click="track('whatsapp_click', { source: 'footer' })"
+              @click="track('whatsapp_click', { location: 'footer' })"
             >Atendimento pelo WhatsApp</a>
           </li><li><a :href="appUrl" class="hover:text-white">Entrar</a></li>
         </ul>
