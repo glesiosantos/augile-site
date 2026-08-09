@@ -6,7 +6,7 @@
         <LogoAugile class="mb-6" />
 
         <h1 class="text-2xl font-bold mb-6">
-          {{ isTeste ? 'Ativar teste grátis' : 'Finalizar assinatura' }}
+          Testar grátis por 14 dias
         </h1>
 
         <!-- LOADING -->
@@ -61,68 +61,6 @@
             </div>
           </div>
 
-          <!-- PAGAMENTO (somente se NÃO for teste) -->
-          <template v-if="!isTeste">
-            <h2 class="font-semibold mb-3">Forma de pagamento</h2>
-
-            <div class="grid grid-cols-2 gap-4 mb-6">
-              <button
-                type="button"
-                :class="[
-                  'border rounded-lg p-4 text-left transition',
-                  pagamento === 'cartao'
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'hover:border-slate-400'
-                ]"
-                @click="pagamento = 'cartao'"
-              >
-                <p class="font-medium">Cartão de crédito</p>
-                <p class="text-sm text-slate-500">Cobrança recorrente</p>
-              </button>
-
-              <button
-                type="button"
-                :class="[
-                  'border rounded-lg p-4 text-left transition',
-                  pagamento === 'pix'
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'hover:border-slate-400'
-                ]"
-                @click="pagamento = 'pix'"
-              >
-                <p class="font-medium">PIX</p>
-                <p class="text-sm text-slate-500">Pagamento imediato</p>
-              </button>
-            </div>
-
-            <!-- CARTÃO -->
-            <div v-if="pagamento === 'cartao'" class="space-y-4 mb-6">
-              <input class="w-full border rounded-lg px-4 py-3" placeholder="Número do cartão">
-              <div class="grid grid-cols-2 gap-4">
-                <input class="border rounded-lg px-4 py-3" placeholder="MM/AA">
-                <input class="border rounded-lg px-4 py-3" placeholder="CVC">
-              </div>
-
-              <div class="rounded-lg bg-slate-50 p-4 text-sm text-slate-600">
-                🔒 Os dados do cartão não são armazenados.
-                A cobrança será <strong>recorrente mensal</strong>.
-              </div>
-            </div>
-
-            <!-- PIX -->
-            <div v-if="pagamento === 'pix'" class="space-y-4 mb-6">
-              <div class="flex justify-center">
-                <div class="w-40 h-40 bg-slate-100 rounded-lg flex items-center justify-center">
-                  QR CODE
-                </div>
-              </div>
-
-              <p class="text-sm text-slate-600 text-center">
-                A renovação será feita <strong>dentro do sistema a cada 30 dias</strong>.
-              </p>
-            </div>
-          </template>
-
           <!-- CTA -->
           <button
             class="w-full bg-blue-600 hover:bg-blue-700
@@ -130,7 +68,7 @@
                    transition-all shadow-md hover:shadow-lg"
             @click="submit"
           >
-            {{ isTeste ? 'Ativar teste grátis' : 'Continuar para pagamento' }}
+            Testar grátis por 14 dias
           </button>
 
           <!-- INFO -->
@@ -152,7 +90,7 @@
 
         <p class="text-xl font-bold mb-1">{{ plano.titulo }}</p>
         <p class="text-blue-600 font-semibold mb-4">
-          {{ isTeste ? 'Teste gratuito' : 'Assinatura mensal' }}
+          Teste grátis por 14 dias
         </p>
 
         <div
@@ -170,13 +108,13 @@
         </ul>
 
         <div class="border-t pt-4 flex justify-between items-end gap-4">
-          <span class="text-lg font-semibold">Total</span>
+          <span class="text-lg font-semibold">Mensalidade após o teste</span>
           <div class="text-right">
             <p v-if="plano.temPromocao" class="text-sm text-slate-400 line-through">
               R$ {{ money(plano.preco) }}
             </p>
             <p :class="['text-2xl font-bold', plano.temPromocao ? 'text-emerald-600' : 'text-blue-600']">
-              R$ {{ money(plano.precoFinal) }}
+              R$ {{ money(plano.precoFinal) }}<span class="text-sm text-slate-500">/mês</span>
             </p>
           </div>
         </div>
@@ -194,7 +132,7 @@ import { maskWhatsApp, isValidWhatsApp } from '~/utils/whatsapp'
 
 const route = useRoute()
 const planosStore = usePlanosStore()
-const { completeRegistration, purchase } = useAnalytics()
+const { trackCompleteRegistration } = useAnalytics()
 
 useHead({
   title: 'Finalizar assinatura'
@@ -202,14 +140,13 @@ useHead({
 
 await planosStore.carregar(true)
 
-const { planos, planoFree, carregando, erro } = storeToRefs(planosStore)
+const { planos, planoBasico, carregando, erro } = storeToRefs(planosStore)
 
 const plano = computed(() => {
   const id = route.query.plano as string | undefined
-  return planos.value.find(p => p.id === id) ?? planoFree.value
+  return planos.value.find(p => p.id === id) ?? planoBasico.value
 })
 
-const isTeste = computed(() => plano.value?.tipo === 'GRATUITO')
 const money = (value: number) => new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
@@ -218,7 +155,6 @@ const money = (value: number) => new Intl.NumberFormat('pt-BR', {
 const nome = ref('')
 const cpf = ref('')
 const whatsapp = ref('')
-const pagamento = ref<'cartao' | 'pix' | null>(null)
 
 const errors = ref({
   nome: '',
@@ -268,12 +204,7 @@ function validate() {
     errors.value.whatsapp = 'WhatsApp inválido'
   }
 
-  if (!isTeste.value && !pagamento.value) {
-    alert('Selecione a forma de pagamento')
-    return false
-  }
-
-  return true
+  return !errors.value.nome && !errors.value.cpf && !errors.value.whatsapp
 }
 
 async function submit() {
@@ -287,14 +218,7 @@ async function submit() {
       idPlano: plano.value.id
     })
 
-    completeRegistration({ plan: plano.value.tipo })
-    if (!isTeste.value) {
-      purchase({
-        currency: 'BRL',
-        value: plano.value.precoFinal,
-        plan: plano.value.tipo
-      })
-    }
+    trackCompleteRegistration({ plan: plano.value.tipo.toLowerCase() })
 
     await navigateTo('/sucesso')
   } catch (error) {

@@ -2,7 +2,8 @@ import type { FacebookPixel } from '~/types/analytics'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
-  const pixelId = String(config.public.metaPixelId || '')
+  const configuredPixelId = String(config.public.metaPixelId || '').trim()
+  const pixelId = /^\d+$/.test(configuredPixelId) ? configuredPixelId : ''
 
   if (pixelId && !window.fbq) {
     const fbq: FacebookPixel = (...args: unknown[]) => {

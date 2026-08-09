@@ -1,5 +1,5 @@
 <template>
-  <section id="planos" class="landing-section scroll-mt-20 bg-white">
+  <section id="planos" ref="pricingSection" class="landing-section scroll-mt-20 bg-white">
     <div class="landing-container">
       <div class="landing-heading">
         <p class="landing-eyebrow">Planos</p>
@@ -49,8 +49,8 @@
             R$ {{ money(plano.precoFinal) }}
             <span :class="['text-base font-semibold', plano.eDestaque ? 'text-slate-300' : 'text-slate-500']">/mês</span>
           </p>
-          <p v-if="plano.trialDays" :class="['mt-3 font-semibold', plano.eDestaque ? 'text-blue-200' : 'text-blue-700']">
-            {{ plano.trialDays }} dias grátis • sem cartão
+          <p :class="['mt-3 font-semibold', plano.eDestaque ? 'text-blue-200' : 'text-blue-700']">
+            Teste grátis por 14 dias • sem cartão
           </p>
           <p :class="['mt-4', plano.eDestaque ? 'text-slate-300' : 'text-slate-600']">
             {{ planDescription(plano.tipo) }}
@@ -70,7 +70,7 @@
             ]"
             @click="selectPlan(plano.tipo)"
           >
-            {{ plano.tipo === 'GRATUITO' ? 'Começar grátis' : `Escolher ${plano.titulo}` }}
+            Testar grátis por 14 dias
           </button>
         </article>
       </div>
@@ -116,7 +116,10 @@ const store = usePlanosStore()
 await store.carregar(true)
 const { planos, carregando, erro } = storeToRefs(store)
 const { openSignup, track } = useLanding()
+const { trackPlanView } = useAnalytics()
 const comparisonOpen = ref(false)
+const pricingSection = ref<HTMLElement | null>(null)
+let pricingObserver: IntersectionObserver | null = null
 
 const money = (value: number) => new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)
 const limit = (value: number | null | undefined, unit: string, unlimited = 'Ilimitados') => value ? `Até ${value}${unit ? ` ${unit}` : ''}` : unlimited
@@ -146,13 +149,14 @@ function features(plano: PlanoComPrecoFinal) {
 }
 
 function planDescription(tipo: TipoPlano) {
-  if (tipo === 'GRATUITO') return 'Para oficinas que querem começar a organizar a rotina sem custo.'
+  if (tipo === 'BASICO') return 'Para oficinas que querem organizar a rotina com os recursos essenciais.'
   if (tipo === 'PROFISSIONAL') return 'Para oficinas que precisam de mais volume e capacidade de gestão.'
   return 'Para oficinas que precisam organizar e controlar melhor a rotina.'
 }
 
 function selectPlan(plan: TipoPlano) {
-  track('plan_select', { plan })
+  const planSlug = plan.toLowerCase()
+  track('plan_selected', { plan: planSlug, source: 'pricing' })
   openSignup(plan, 'pricing')
 }
 
@@ -160,4 +164,18 @@ function toggleComparison() {
   comparisonOpen.value = !comparisonOpen.value
   if (comparisonOpen.value) track('comparison_open')
 }
+
+onMounted(() => {
+  if (!pricingSection.value) return
+
+  pricingObserver = new IntersectionObserver(([entry]) => {
+    if (!entry?.isIntersecting) return
+    trackPlanView({ content_name: 'Planos Augile', content_type: 'product_group' })
+    pricingObserver?.disconnect()
+  }, { threshold: 0.35 })
+
+  pricingObserver.observe(pricingSection.value)
+})
+
+onBeforeUnmount(() => pricingObserver?.disconnect())
 </script>

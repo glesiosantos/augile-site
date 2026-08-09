@@ -40,9 +40,9 @@ export const showcaseItems = [
 
 export const faqItems = [
   {
-    question: 'O plano gratuito tem prazo para acabar?',
+    question: 'Quanto tempo dura o teste grátis?',
     answer:
-      'Não. O plano gratuito não possui prazo de encerramento, desde que sejam respeitados os limites apresentados na seção de planos.'
+      'O período de avaliação dura 14 dias. Nesse período, você pode conhecer a Augile antes de decidir qual plano atende melhor à sua oficina.'
   },
   {
     question: 'Preciso cadastrar um cartão para começar?',
@@ -52,7 +52,7 @@ export const faqItems = [
   {
     question: 'O que acontece depois dos 14 dias de teste?',
     answer:
-      'Após os 14 dias, sua conta será transferida automaticamente para o plano gratuito. Os limites de serviços, usuários e ordens de serviço serão ajustados conforme as condições desse plano.'
+      'Ao fim do período de avaliação, escolha entre o Plano Básico e o Plano Profissional para continuar usando a plataforma.'
   },
   {
     question: 'Posso mudar de plano depois?',

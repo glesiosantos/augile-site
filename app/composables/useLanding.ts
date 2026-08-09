@@ -7,7 +7,7 @@ export type LandingEvent =
   | 'signup_start'
   | 'signup_validation_error'
   | 'signup_success'
-  | 'plan_select'
+  | 'plan_selected'
   | 'whatsapp_click'
   | 'comparison_open'
   | 'faq_expand'
@@ -15,21 +15,31 @@ export type LandingEvent =
 export function useLanding() {
   const analytics = useAnalytics()
   const signupOpen = useState('landing-signup-open', () => false)
-  const selectedPlan = useState<TipoPlano>('landing-selected-plan', () => 'GRATUITO')
+  const selectedPlan = useState<TipoPlano>('landing-selected-plan', () => 'BASICO')
+
+  function planName(plan: TipoPlano) {
+    return plan.toLowerCase()
+  }
 
   function track(event: LandingEvent, detail: Record<string, string> = {}) {
     if (!import.meta.client) return
     window.dispatchEvent(new CustomEvent('augile:landing', { detail: { event, ...detail } }))
-    analytics.customEvent(event, detail)
 
-    if (event === 'whatsapp_click') analytics.contact(detail)
+    if (event === 'whatsapp_click') {
+      analytics.trackContact({ channel: 'whatsapp', location: detail.location || detail.source })
+      return
+    }
+
+    analytics.trackCustomEvent(event, detail)
   }
 
-  function openSignup(plan: TipoPlano = 'GRATUITO', source = 'unknown') {
+  function openSignup(plan: TipoPlano = 'BASICO', source = 'unknown') {
     selectedPlan.value = plan
     signupOpen.value = true
-    track('signup_open', { plan, source })
-    analytics.lead({ plan, source })
+    const planSlug = planName(plan)
+    track('signup_open', { plan: planSlug, source })
+    analytics.trackLead({ plan: planSlug, source })
+    analytics.trackTrialStart({ plan: planSlug, source, trial_days: 14 })
   }
 
   return { signupOpen, selectedPlan, openSignup, track }

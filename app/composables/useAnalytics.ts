@@ -5,6 +5,7 @@ type StandardEvent =
   | 'ViewContent'
   | 'Lead'
   | 'Contact'
+  | 'StartTrial'
   | 'CompleteRegistration'
   | 'Purchase'
 
@@ -13,16 +14,20 @@ const googleEventNames: Record<StandardEvent, string> = {
   ViewContent: 'view_item',
   Lead: 'generate_lead',
   Contact: 'contact',
+  StartTrial: 'begin_trial',
   CompleteRegistration: 'sign_up',
   Purchase: 'purchase'
 }
 
 export function useAnalytics() {
+  const { eventData } = useMarketingAttribution()
+
   function send(event: StandardEvent, data: AnalyticsEventData = {}) {
     if (!import.meta.client) return
 
-    window.gtag?.('event', googleEventNames[event], data)
-    window.fbq?.('track', event, data)
+    const payload = { ...eventData(), ...data }
+    window.gtag?.('event', googleEventNames[event], payload)
+    window.fbq?.('track', event, payload)
   }
 
   function pageView(data: AnalyticsEventData = {}) {
@@ -41,6 +46,10 @@ export function useAnalytics() {
     send('Contact', data)
   }
 
+  function trialStart(data: AnalyticsEventData = {}) {
+    send('StartTrial', data)
+  }
+
   function completeRegistration(data: AnalyticsEventData = {}) {
     send('CompleteRegistration', data)
   }
@@ -52,8 +61,9 @@ export function useAnalytics() {
   function customEvent(name: string, data: AnalyticsEventData = {}) {
     if (!import.meta.client) return
 
-    window.gtag?.('event', name, data)
-    window.fbq?.('trackCustom', name, data)
+    const payload = { ...eventData(), ...data }
+    window.gtag?.('event', name, payload)
+    window.fbq?.('trackCustom', name, payload)
   }
 
   return {
@@ -61,8 +71,18 @@ export function useAnalytics() {
     viewContent,
     lead,
     contact,
+    trialStart,
     completeRegistration,
     purchase,
-    customEvent
+    customEvent,
+    trackPageView: pageView,
+    trackViewContent: viewContent,
+    trackLead: lead,
+    trackContact: contact,
+    trackCompleteRegistration: completeRegistration,
+    trackPlanView: viewContent,
+    trackTrialStart: trialStart,
+    trackPurchase: purchase,
+    trackCustomEvent: customEvent
   }
 }
