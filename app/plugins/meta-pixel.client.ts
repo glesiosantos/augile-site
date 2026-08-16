@@ -42,7 +42,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (route.fullPath === lastTrackedPath) return
 
     lastTrackedPath = route.fullPath
-    useAnalytics().pageView({
+    window.fbq?.('track', 'PageView', {
       page_location: window.location.href,
       page_path: route.fullPath,
       page_title: document.title

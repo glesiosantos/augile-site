@@ -1,6 +1,6 @@
 # Analytics da Augile
 
-A aplicação envia os eventos centralizados pelo composable `useAnalytics()` para o Google Analytics 4 e o Meta Pixel. A estrutura também carrega o Google Tag Manager quando seu ID é configurado. Os plugins são exclusivamente client-side.
+A aplicação envia os eventos centralizados pelo composable `useAnalytics()` para o Google Analytics 4 e o Meta Pixel. Os plugins são exclusivamente client-side.
 
 ## Configuração
 
@@ -9,10 +9,11 @@ Cadastre o Pixel no **Gerenciador de Eventos da Meta**, em **Conectar fonte de d
 ```dotenv
 NUXT_PUBLIC_META_PIXEL_ID=123456789012345
 NUXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-NUXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 ```
 
-O GTM é opcional. Para trocar qualquer ID, altere a variável correspondente e publique uma nova versão da aplicação. Não coloque tokens da Meta Conversions API no runtime público; a futura CAPI deve ser implementada no backend e compartilhar nomes e identificadores de eventos para permitir deduplicação.
+Para trocar qualquer ID, altere a variável correspondente e publique uma nova versão da aplicação. Não coloque tokens da Meta Conversions API no runtime público; a futura CAPI deve ser implementada no backend e compartilhar nomes e identificadores de eventos para permitir deduplicação.
+
+Na Vercel, adicione `NUXT_PUBLIC_GA_ID` em **Settings > Environment Variables** para os ambientes **Production** e **Preview** e faça um novo deploy. O valor é um identificador público de medição, não uma chave privada.
 
 ## Eventos
 
@@ -51,4 +52,4 @@ Use apenas dados não sensíveis. CPF, telefone, nome, e-mail e outros dados pes
 
 No GA4, abra **Administrador > DebugView** durante o teste local com o modo de depuração habilitado no navegador, ou use **Relatórios > Tempo real** no ambiente publicado. Navegue pelas páginas e execute os CTAs; confirme os nomes GA4 da tabela acima. A extensão Google Analytics Debugger e a aba Network do navegador, filtrando por `collect`, ajudam a diagnosticar o envio.
 
-O carregamento do GTM pode ser validado no modo **Preview** do Google Tag Manager. Evite configurar no contêiner tags que repitam os mesmos eventos já enviados diretamente pela aplicação.
+Na aba Network, filtre primeiro por `googletagmanager` para confirmar o carregamento de `gtag/js?id=...` e depois por `collect` para confirmar cada `page_view`. Bloqueadores de anúncios podem impedir essas requisições; nesse caso, teste com eles desativados para o domínio.

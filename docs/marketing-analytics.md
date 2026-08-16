@@ -4,7 +4,7 @@ Este documento descreve o rastreamento da landing page usada nas campanhas da Au
 
 ## Configuração existente
 
-O GA4 é carregado pelo plugin `app/plugins/analytics.client.ts`. O plugin configura `send_page_view: false`, pois o `PageView` é controlado pela aplicação para evitar duplicidade durante a navegação Nuxt.
+O GA4 é carregado pelo plugin `app/plugins/google-analytics.client.ts`. O plugin configura `send_page_view: false`, pois o `page_view` é controlado pela aplicação para evitar duplicidade durante a navegação Nuxt.
 
 O Meta Pixel é carregado por `app/plugins/meta-pixel.client.ts`. O ID vem exclusivamente de `runtimeConfig.public.metaPixelId`, preenchido pela variável:
 
@@ -18,7 +18,6 @@ Variáveis públicas relacionadas:
 
 ```dotenv
 NUXT_PUBLIC_GA_ID=
-NUXT_PUBLIC_GTM_ID=
 NUXT_PUBLIC_META_PIXEL_ID=
 NUXT_PUBLIC_SITE_URL=
 NUXT_PUBLIC_WHATSAPP_NUMBER=
@@ -26,13 +25,13 @@ NUXT_PUBLIC_APP_URL=
 NUXT_PUBLIC_API_BASE_URL=
 ```
 
-`NUXT_PUBLIC_GTM_ID` é opcional. Não configure no GTM tags que dupliquem os eventos enviados diretamente pela aplicação.
+O projeto não carrega o Google Tag Manager. O GA4 é a única integração Google para evitar tags e eventos duplicados.
 
 ## Eventos do funil
 
 | Evento | GA4 | Meta | Onde dispara |
 | --- | --- | --- | --- |
-| Visualização de página | `page_view` | `PageView` | Primeiro carregamento e depois de uma mudança real de `fullPath`, em `meta-pixel.client.ts` |
+| Visualização de página | `page_view` | `PageView` | Primeiro carregamento e depois de uma mudança real de `fullPath`, nos plugins client-side de cada plataforma |
 | Visualização de planos | `view_item` | `ViewContent` | Uma vez, quando pelo menos 35% da seção `#planos` fica visível |
 | Interesse em cadastro | `generate_lead` | `Lead` | Ao abrir o cadastro por um CTA de teste ou de plano |
 | Intenção de teste | `begin_trial` | `StartTrial` | Junto da abertura do cadastro, antes de qualquer registro concluído |
@@ -102,7 +101,7 @@ Também valide a aba Network e o console do navegador. Não use dados pessoais r
 ## Checklist de deploy
 
 - [ ] Configurar `NUXT_PUBLIC_META_PIXEL_ID` com o ID numérico real do Dataset/Pixel.
-- [ ] Confirmar `NUXT_PUBLIC_GA_ID` e evitar tags duplicadas no GTM.
+- [ ] Configurar `NUXT_PUBLIC_GA_ID` em Production e Preview na Vercel e publicar novamente.
 - [ ] Configurar `NUXT_PUBLIC_SITE_URL` com a URL pública, sem caminho adicional.
 - [ ] Confirmar `NUXT_PUBLIC_WHATSAPP_NUMBER` apenas com o número comercial correto, incluindo país e DDD.
 - [ ] Confirmar `NUXT_PUBLIC_API_BASE_URL` e `NUXT_PUBLIC_APP_URL`.
