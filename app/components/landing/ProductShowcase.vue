@@ -1,5 +1,5 @@
 <template>
-  <section id="demonstracao" class="landing-section scroll-mt-20 bg-slate-950 text-white">
+  <section id="demonstracao" class="landing-section scroll-mt-20 bg-premium text-white">
     <div class="landing-container">
       <div class="landing-heading !mx-0 !text-left"><p class="landing-eyebrow !text-blue-300">Produto no dia a dia</p><h2 class="!text-white">Veja como a Augile funciona no dia a dia</h2><p class="!text-slate-300">Conheça os recursos que ajudam a oficina a manter a rotina em ordem.</p></div>
       <div role="tablist" aria-label="Recursos da Augile" class="mb-8 flex gap-2 overflow-x-auto pb-2">

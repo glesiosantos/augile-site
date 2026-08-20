@@ -3,8 +3,27 @@
 @reference utilities;
 
 @theme {
-  --color-primary: #2563eb;
-  --color-secondary: #0f172a;
+  --color-primary: #087BFF;
+  --color-primary-hover: #0649D8;
+  --color-highlight: #00C8FF;
+  --color-dark: #061426;
+  --color-premium: #020B18;
+  --color-copy: #FFFFFF;
+  --color-copy-muted: #D7DFEA;
+
+  /* Mantém as utilities existentes alinhadas à identidade visual da marca. */
+  --color-blue-100: #D7DFEA;
+  --color-blue-200: #00C8FF;
+  --color-blue-300: #00C8FF;
+  --color-blue-400: #00C8FF;
+  --color-blue-500: #087BFF;
+  --color-blue-600: #087BFF;
+  --color-blue-700: #087BFF;
+  --color-blue-800: #0649D8;
+  --color-blue-950: #020B18;
+  --color-slate-950: #020B18;
+  --color-slate-900: #061426;
+  --color-slate-300: #D7DFEA;
 }
 
 body {
@@ -20,9 +39,9 @@ html { scroll-behavior: smooth; }
 .landing-heading h2 { @apply text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl; }
 .landing-heading > p:last-child { @apply mt-4 text-lg leading-8 text-slate-600; }
 .landing-eyebrow { @apply mb-3 text-sm font-bold uppercase tracking-[.16em] text-blue-700; }
-.landing-button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700; }
+.landing-button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-highlight; }
 .landing-button-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-center text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700; }
-.landing-input { @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-blue-600 focus:ring-3 focus:ring-blue-100; }
+.landing-input { @apply min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-primary focus:ring-3 focus:ring-blue-100; }
 .landing-input[aria-invalid="true"] { @apply border-red-600 focus:border-red-600 focus:ring-red-100; }
 
 @media (prefers-reduced-motion: reduce) {

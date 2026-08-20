@@ -1,7 +1,7 @@
 <template>
-  <footer class="bg-slate-950 py-12 text-slate-300">
+  <footer class="bg-premium py-12 text-copy-muted">
     <div class="landing-container grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
-      <div><img src="~/assets/imgs/augile_logo_branco_completo.png" alt="Augile" class="h-12 w-auto"><p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">Gestão simples para organizar ordens de serviço, clientes, veículos, agenda e serviços da oficina.</p></div><div>
+      <div><img src="~/assets/imgs/logo_augile_horizontal_branco.png" alt="Augile — Gestão inteligente para oficinas" class="h-14 w-auto object-contain"><p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">Gestão simples para organizar ordens de serviço, clientes, veículos, agenda e serviços da oficina.</p></div><div>
         <h2 class="text-sm font-bold uppercase tracking-wider text-white">Produto e suporte</h2><ul class="mt-4 space-y-3 text-sm">
           <li><a href="#recursos" class="hover:text-white">Recursos</a></li><li><a href="#planos" class="hover:text-white">Planos</a></li><li>
             <a

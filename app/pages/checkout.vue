@@ -95,7 +95,7 @@
 
         <div
           v-if="plano.temPromocao"
-          class="mb-4 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-700"
+          class="mb-4 inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-hover"
         >
           Oferta especial
         </div>
@@ -113,7 +113,7 @@
             <p v-if="plano.temPromocao" class="text-sm text-slate-400 line-through">
               R$ {{ money(plano.preco) }}
             </p>
-            <p :class="['text-2xl font-bold', plano.temPromocao ? 'text-emerald-600' : 'text-blue-600']">
+            <p class="text-2xl font-bold text-primary">
               R$ {{ money(plano.precoFinal) }}<span class="text-sm text-slate-500">/mês</span>
             </p>
           </div>

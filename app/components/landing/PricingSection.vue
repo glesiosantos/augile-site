@@ -32,7 +32,7 @@
             v-if="plano.eDestaque || plano.temPromocao"
             :class="[
               'absolute right-6 top-0 -translate-y-1/2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white',
-              plano.temPromocao ? 'bg-emerald-500' : 'bg-blue-600'
+              plano.temPromocao ? 'bg-highlight text-premium' : 'bg-primary'
             ]"
           >
             {{ plano.temPromocao ? 'Oferta especial' : 'Mais completo' }}
@@ -43,9 +43,9 @@
           </p>
           <p v-if="plano.temPromocao" :class="['mt-4 text-sm', plano.eDestaque ? 'text-slate-400' : 'text-slate-500']">
             <span class="line-through">R$ {{ money(plano.preco) }}</span>
-            <span class="ml-2 font-bold uppercase tracking-wide text-emerald-500">Preço promocional</span>
+            <span class="ml-2 font-bold uppercase tracking-wide text-primary">Preço promocional</span>
           </p>
-          <p :class="['text-4xl font-extrabold', plano.temPromocao ? 'mt-1 text-emerald-500' : 'mt-4']">
+          <p :class="['text-4xl font-extrabold', plano.temPromocao ? 'mt-1 text-primary' : 'mt-4']">
             R$ {{ money(plano.precoFinal) }}
             <span :class="['text-base font-semibold', plano.eDestaque ? 'text-slate-300' : 'text-slate-500']">/mês</span>
           </p>

@@ -21,7 +21,7 @@
       >
         <!-- LOGO -->
         <img
-          src="~/assets/imgs/augile_logo_branco_completo.png"
+          src="~/assets/imgs/logo_augile_horizontal_branco.png"
           alt="Augile"
           class="mx-auto mb-6 h-14 md:h-16"
         >

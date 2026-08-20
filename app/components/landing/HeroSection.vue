@@ -1,6 +1,6 @@
 <template>
   <section id="inicio" class="relative overflow-hidden bg-slate-50 pt-28 sm:pt-32">
-    <div class="absolute inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_75%_20%,rgba(37,99,235,.12),transparent_55%)]" aria-hidden="true" />
+    <div class="absolute inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_75%_20%,rgba(0,200,255,.14),transparent_55%)]" aria-hidden="true" />
     <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 sm:px-6 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-24">
       <div class="max-w-2xl">
         <p class="mb-5 text-sm font-bold uppercase tracking-[.16em] text-blue-700">Gestão simples para oficinas de carros, motos e caminhões</p>

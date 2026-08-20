@@ -2,7 +2,7 @@
   <header :class="['fixed inset-x-0 top-0 z-40 border-b transition', scrolled || menuOpen ? 'border-slate-200 bg-white/95 shadow-sm backdrop-blur' : 'border-transparent bg-white/90']">
     <div class="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <a href="#inicio" class="rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600" aria-label="Augile, início">
-        <img src="~/assets/imgs/logo_augile_completa.png" alt="Augile" class="h-9 w-auto sm:h-10">
+        <img src="~/assets/imgs/logo_augile_horizontal.png" alt="Augile — Gestão inteligente para oficinas" class="h-10 w-auto object-contain sm:h-12">
       </a>
       <nav class="hidden items-center gap-7 lg:flex" aria-label="Navegação principal">
         <a
